@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -672,16 +672,30 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
+        gopls = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
+        -- https://github.com/pmizio/typescript-tools.nvim,
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
+        volar = {
+          filetypes = {
+            'typescript',
+            'javascript',
+            'javascriptreact',
+            'typescriptreact',
+            'vue',
+          },
+          init_options = {
+            typescript = {
+              tsdk = vim.fn.stdpath 'data' .. '/mason/packages/typescript-language-server/node_modules/typescript/lib',
+            },
+          },
+        },
         --
 
         lua_ls = {
@@ -769,10 +783,11 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -944,7 +959,28 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'vue',
+        'go',
+        'javascript',
+        'typescript',
+        'tsx',
+        'yaml',
+        'json',
+        'html',
+        'css',
+        'lua',
+        'luadoc',
+        'vim',
+        'vimdoc',
+        'query',
+        'bash',
+        'c',
+        'diff',
+        'markdown',
+        'markdown_inline',
+        'python',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {

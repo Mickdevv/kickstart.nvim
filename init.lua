@@ -681,21 +681,20 @@ require('lazy').setup({
         -- https://github.com/pmizio/typescript-tools.nvim,
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        ts_ls = {},
-        volar = {
-          filetypes = {
-            'typescript',
-            'javascript',
-            'javascriptreact',
-            'typescriptreact',
-            'vue',
-          },
+        ts_ls = {
+
+          filetypes = { 'typescript', 'javascript', 'vue' },
           init_options = {
-            typescript = {
-              tsdk = vim.fn.stdpath 'data' .. '/mason/packages/typescript-language-server/node_modules/typescript/lib',
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server', -- or your manual path
+                -- languages = { 'vue' },
+              },
             },
           },
         },
+        -- vue_ls = {},
         --
 
         lua_ls = {
@@ -729,6 +728,9 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+        -- 'vtsls',
+        -- 'vue-language-server',
+        'typescript-language-server',
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -747,6 +749,49 @@ require('lazy').setup({
           end,
         },
       }
+      -- Custom ts_ls setup (TypeScript with Vue plugin)
+local ts_ls_config = {
+  filetypes = {
+    "javascript",
+    "javascriptreact",
+    "javascript.jsx",
+    "typescript",
+    "typescriptreact",
+    "typescript.tsx",
+    "vue",
+  },
+  init_options = {
+    plugins = {
+      {
+        name = "@vue/typescript-plugin",
+        location = vim.fn.stdpath("data")
+            .. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+        languages = { "vue" },
+        configNamespace = "typescript",
+      },
+    },
+  },
+}
+
+-- Custom vue_ls setup (standalone Volar)
+local vue_ls_config = {
+  filetypes = { "vue", "javascript", "typescript" },
+  init_options = {
+    config = {
+      vue = {
+        hybridMode = false,
+      },
+    },
+  },
+}
+
+-- Use Neovim 0.11+ native LSP registration
+vim.lsp.config("ts_ls", ts_ls_config)
+vim.lsp.enable("ts_ls")
+
+vim.lsp.config("vue_ls", vue_ls_config)
+vim.lsp.enable("vue_ls")
+
     end,
   },
 
